@@ -2,7 +2,8 @@
  *   Copyright (C) 2020 - 2025 by Federico Amedeo Izzo IU2NUO,             *
  *                                Niccolò Izzo IU2KIN,                     *
  *                                Silvano Seva IU2KWO,                     *
- *                                Frederik Saraci IU2NRO                   *
+ *                                Frederik Saraci IU2NRO,                  *
+ *                                Jetse Verschuren PA1JET                  *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -36,4 +37,26 @@ int16_t dsp_dcBlockFilter(struct dcBlock *dcb, int16_t sample)
     dcb->prevOut = dcb->accum >> 15;
 
     return static_cast<int16_t>(dcb->prevOut);
+}
+
+void dsp_oversamplingSetOversampling(struct oversamplingBlock *oversamplingBlock, uint8_t oversampling)
+{
+    oversamplingBlock->oversampling = oversampling;
+}
+
+bool dsp_oversamplingDecimate(struct oversamplingBlock *oversamplingBlock, uint16_t *sample)
+{
+    oversamplingBlock->accumulator += *sample;
+    oversamplingBlock->count++;
+    if(oversamplingBlock->count >= oversamplingBlock->oversampling)
+    {
+        *sample = oversamplingBlock->accumulator;
+        oversamplingBlock->accumulator = 0;
+        oversamplingBlock->count = 0;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }

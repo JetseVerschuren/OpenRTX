@@ -2,7 +2,8 @@
  *   Copyright (C) 2020 - 2025 by Federico Amedeo Izzo IU2NUO,             *
  *                                Niccolò Izzo IU2KIN,                     *
  *                                Silvano Seva IU2KWO,                     *
- *                                Frederik Saraci IU2NRO                   *
+ *                                Frederik Saraci IU2NRO,                  *
+ *                                Jetse Verschuren PA1JET                  *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -72,6 +73,19 @@ static inline void dsp_removeDcOffset(struct dcBlock *dcb, int16_t *buffer,
     for (size_t i = 0; i < length; i++)
         buffer[i] = dsp_dcBlockFilter(dcb, buffer[i]);
 }
+
+/**
+ * Data structure holding the internal state of an oversampling filter.
+ */
+struct oversamplingBlock {
+    uint8_t oversampling;
+    uint8_t count;
+    uint16_t accumulator;
+};
+
+void dsp_oversamplingSetOversampling(struct oversamplingBlock *oversamplingBlock, uint8_t oversampling);
+
+bool dsp_oversamplingDecimate(struct oversamplingBlock *oversamplingBlock, uint16_t *sample);
 
 #ifdef __cplusplus
 }
